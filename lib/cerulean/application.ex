@@ -8,8 +8,7 @@ defmodule Cerulean.Application do
 
     # Define workers and child supervisors to be supervised
     children = [
-      supervisor(Cerulean.MySupervisor, []),
-      # worker(Cerulean.MyServer, [])
+      worker(Cerulean.MyServer, [self(), %{ child_count: 3 }])
     ]
     opts = [strategy: :one_for_one, name: Cerulean.Supervisor]
     Supervisor.start_link(children, opts)
