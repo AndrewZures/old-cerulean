@@ -1,4 +1,4 @@
-defmodule Cerulean.MySupervisor do
+defmodule Cerulean.TestSupervisor do
   use Supervisor
   import Supervisor.Spec
 
@@ -7,10 +7,8 @@ defmodule Cerulean.MySupervisor do
   end
 
   def init(_config) do
-    children = [
-      worker(Cerulean.Worker, [self()])
-    ]
-    opts = [strategy: :one_for_all]
+    children = [worker(Cerulean.BaseWorker, [])]
+    opts = [strategy: :one_for_one]
     supervise(children, opts)
   end
 end
