@@ -8,7 +8,7 @@ defmodule Cerulean.TestSupervisor do
 
   def init(_config) do
     children = [worker(Cerulean.BaseWorker, [])]
-    opts = [strategy: :one_for_one]
+    opts = [strategy: :simple_one_for_one]
     supervise(children, opts)
   end
 end

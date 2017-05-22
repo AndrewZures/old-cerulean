@@ -5,7 +5,7 @@ defmodule Cerulean.Worker do
   # Api
 
   def start_link(sup) do
-    GenServer.start_link(__MODULE__, [sup], name: __MODULE__)
+    GenServer.start_link(__MODULE__, [sup])
   end
 
   # Callbacks
@@ -16,7 +16,12 @@ defmodule Cerulean.Worker do
   end
 
   def handle_info({:start_children, sup}, state) do
-    start_children(sup, state)
+    case start_children(sup, state) do
+      {:ok, _} ->
+        {:noreply, state}
+      {:error, error} ->
+        {:stop, error}
+    end
   end
 
   def handle_call({:start_children, sup}, _from, state) do
@@ -24,13 +29,26 @@ defmodule Cerulean.Worker do
   end
 
   def start_children(sup, state) do
-    opts = [id: "hello", restart: :permanent]
-    case Supervisor.start_child(sup, supervisor(Cerulean.TestSupervisor, [], opts)) do
-      {:ok, w} ->
-        {:noreply, state}
+    case start_child_supervisor(sup, state) do
+      {:ok, child_sup} ->
+        start_all_children(child_sup)
+        {:ok, child_sup}
       {:error, error} ->
         {:error, error}
+      _ ->
+        {:error, :unknown}
     end
   end
 
+  def start_child_supervisor(sup, state) do
+    opts = [id: "hello", restart: :permanent]
+    Supervisor.start_child(sup, supervisor(Cerulean.TestSupervisor, [], opts))
+  end
+
+  def start_all_children(child_sup) do
+    1..3
+    |> Enum.each(fn (idx) ->
+      Supervisor.start_child(child_sup, [])
+    end)
+  end
 end
