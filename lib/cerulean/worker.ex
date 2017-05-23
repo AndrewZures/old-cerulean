@@ -5,7 +5,7 @@ defmodule Cerulean.Worker do
   # Api
 
   def start_link(sup) do
-    GenServer.start_link(__MODULE__, [sup])
+    GenServer.start_link(__MODULE__, [sup], name: __MODULE__)
   end
 
   # Callbacks
@@ -47,8 +47,10 @@ defmodule Cerulean.Worker do
 
   def start_all_children(child_sup) do
     1..3
-    |> Enum.each(fn (idx) ->
-      Supervisor.start_child(child_sup, [])
-    end)
+    |> Enum.each(fn (idx) -> start_child(idx, child_sup) end)
+  end
+
+  def start_child(idx, sup) do
+    {:ok, child} = Supervisor.start_child(sup, [[name: :"#{idx}BaseWorker"]])
   end
 end

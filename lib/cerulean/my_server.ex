@@ -1,7 +1,6 @@
 defmodule Cerulean.MyServer do
   use GenServer
   import Supervisor.Spec
-  require IEx
 
   defmodule State do
     defstruct children: [], sup: nil, my_sup: nil, config: nil

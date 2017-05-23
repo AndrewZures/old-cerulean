@@ -11,4 +11,5 @@ defmodule Cerulean.TestSupervisor do
     opts = [strategy: :simple_one_for_one]
     supervise(children, opts)
   end
+
 end
