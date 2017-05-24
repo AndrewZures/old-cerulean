@@ -8,7 +8,7 @@ defmodule Cerulean.MySupervisor do
 
   def init(_config) do
     children = [
-      worker(Cerulean.Worker, [self()])
+      worker(Cerulean.MyServer, [self()])
     ]
     opts = [strategy: :one_for_all]
     supervise(children, opts)
