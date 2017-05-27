@@ -20,7 +20,7 @@ defmodule Cerulean.MyServer do
   end
 
   def handle_info({:start_children, sup}, state) do
-    start_children(sup, state)
+    state = start_children(sup, state)
     {:noreply, state}
     # case start_children(sup, state) do
     #   {:ok, children} ->
